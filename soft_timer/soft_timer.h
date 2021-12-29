@@ -9,7 +9,7 @@
 typedef uint16_t soft_timer_base_t;
 typedef void (*soft_timer_cb)(void);
 
-volatile soft_timer_base_t g_soft_timer_ticks;
+extern soft_timer_base_t g_soft_timer_ticks;
 
 void soft_timer_create(soft_timer_base_t period, soft_timer_cb cb);
 void soft_timer_run(void);
