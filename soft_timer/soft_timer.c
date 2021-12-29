@@ -11,6 +11,7 @@ typedef struct soft_timer_obj
 } soft_timer_obj_t;
 
 soft_timer_obj_t *g_soft_timer_head = NULL;
+soft_timer_base_t g_soft_timer_ticks = 0;
 
 void soft_timer_create(soft_timer_base_t period, soft_timer_cb cb)
 {
