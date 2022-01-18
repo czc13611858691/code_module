@@ -41,6 +41,7 @@ void soft_timer_run(void)
             obj->cb();
         }
     }
+    SoftTimer_IdleTaskRun();
 }
 
 void soft_timer_delay_us_init(void)
@@ -59,4 +60,36 @@ void soft_timer_delay_us(uint32_t xus)
 	volatile uint32_t delay = xus * g_delay_us_Param;
 	while (delay--)
 		;
+}
+
+typedef struct SoftTimer_IdleObj
+{
+    void (*cb)(void);
+    struct SoftTimer_IdleObj *next;
+} SoftTimer_IdleObj_t;
+
+SoftTimer_IdleObj_t *g_SoftTimer_IdleObjHead = NULL;
+
+void SoftTimer_IdleTaskCreate(void (*cb)(void))
+{
+    SoftTimer_IdleObj_t *obj = NULL;
+    obj = (SoftTimer_IdleObj_t *)malloc(sizeof(SoftTimer_IdleObj_t));
+    if (obj == NULL)
+    {
+        return;
+    }
+    memset(obj, 0, sizeof(SoftTimer_IdleObj_t));
+    
+    obj->cb = cb;
+    obj->next = g_SoftTimer_IdleObjHead;
+    g_SoftTimer_IdleObjHead = obj;
+}
+
+void SoftTimer_IdleTaskRun(void)
+{
+    SoftTimer_IdleObj_t *obj = g_SoftTimer_IdleObjHead;
+    for (; obj != NULL; obj = obj->next)
+    {
+        obj->cb();
+    }
 }
